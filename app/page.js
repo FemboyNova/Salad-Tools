@@ -87,9 +87,9 @@ export default function SaladNetworkMonitor() {
 
   return (
     <div className="min-h-screen bg-[#0a192f] p-8 text-[#c3e325]">
-      <h1 className="text-4xl font-bold mb-4">Salad Network Monitor (API is currently providing fake data) </h1>
+      <h1 className="text-4xl font-bold mb-4">Salad Network Monitor (API is currently providing fake data)</h1>
       <p className="mb-8 text-[#8b9cb3]">
-        Take a birds eye view on how different hardware is performing on the Salad network. This information is refreshed hourly.
+        Take a bird's eye view on how different hardware is performing on the Salad network. This information is refreshed hourly.
       </p>
 
       <div className="overflow-x-auto">
@@ -151,6 +151,11 @@ export default function SaladNetworkMonitor() {
           </tbody>
         </table>
       </div>
+
+      {/* Disclaimer at the bottom */}
+      <footer className="text-center text-sm text-white mt-8">
+        <strong className="font-bold">Disclaimer:</strong> This is not an official website. It uses data provided through the official Salad API for informational purposes only.
+      </footer>
     </div>
   )
 }
