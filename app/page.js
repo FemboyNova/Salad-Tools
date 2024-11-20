@@ -33,7 +33,7 @@ export default function SaladNetworkMonitor() {
   }
 
   const sortData = (column) => {
-    const direction = column === sortColumn && sortDirection === 'asc' ? 'desc' : 'asc';
+    const direction = column === sortColumn && sortDirection === 'desc' ? 'asc' : 'desc';
     setSortColumn(column);
     setSortDirection(direction);
 
