@@ -8,14 +8,15 @@ export default function SaladNetworkMonitor() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
   const [sortColumn, setSortColumn] = useState('name')
-  const [sortDirection, setSortDirection] = useState('asc')
+  const [sortDirection, setSortDirection] = useState('desc')
 
   useEffect(() => {
     async function fetchGPUData() {
       try {
         const res = await fetch('/api/gpuDemand');
         const data = await res.json();
-        setGpuData(data);
+        const sortedData = data.sort((a, b) => b.name.localeCompare(a.name));
+        setGpuData(sortedData);
         setIsLoading(false);
       } catch (error) {
         setError('Failed to fetch GPU data');
