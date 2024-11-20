@@ -78,7 +78,7 @@ export default function SaladNetworkMonitor() {
   }
 
   if (isLoading) {
-    return <div className="flex justify-center items-center h-screen text-[#c3e325]">Loading...</div>
+    return <div className="flex justify-center items-center h-screen bg-[#0a192f] text-[#c3e325] text-3xl">Loading...</div>
   }
 
   if (error) {
