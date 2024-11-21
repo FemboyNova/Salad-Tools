@@ -13,8 +13,8 @@ const geistMono = localFont({
 });
 
 export const metadata = {
-  title: "Salad Tools",
-  description: "Funny tools i made for salad",
+  title: "Community Salad Tools",
+  description: "Funny tools i made for the salad Community",
 };
 
 export default function RootLayout({ children }) {
