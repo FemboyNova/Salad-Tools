@@ -166,6 +166,8 @@ export default function SaladNetworkMonitor() {
         </td>
         <td className="p-4 text-center text-white">
           {gpu.recommendedSpecs.ramGb}GB System RAM
+          <br />
+          <span className="text-sm text-[#8b9cb3]">120 GB Storage</span>
         </td>
         <td className="p-4 text-center">
           <span
@@ -187,6 +189,7 @@ export default function SaladNetworkMonitor() {
     );
   })}
 </tbody>
+
   </table>
 </div>
 
