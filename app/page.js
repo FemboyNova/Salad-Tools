@@ -148,7 +148,7 @@ export default function SaladNetworkMonitor() {
       min: gpu.earningRates.minEarningRate.toFixed(3),
       max: gpu.earningRates.maxEarningRate.toFixed(3),
     };
-    
+
     return (
       <tr
         key={index}
@@ -156,7 +156,7 @@ export default function SaladNetworkMonitor() {
           index % 2 === 0 ? 'bg-[#1e2a47]' : 'bg-[#112240]'
         } hover:bg-[#2c3e54] transition-all duration-300`}
       >
-        <td className="p-4 text-center">
+        <td className="p-4 text-left">
           <div className="font-bold">{gpu.name}</div>
           <div className="text-sm text-[#8b9cb3]">
             HOURLY RATE
