@@ -174,7 +174,7 @@ export default function SaladNetworkMonitor() {
             {demand.text}
           </span>
           <div className="text-sm mt-2 text-[#8b9cb3]">
-            Total GPUs rented: {gpu.utilizationPct}%
+            GPUs rented: {gpu.utilizationPct}%
           </div>
         </td>
         <td className="p-4 text-center text-white">
