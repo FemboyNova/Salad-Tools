@@ -193,10 +193,47 @@ export default function SaladNetworkMonitor() {
   </table>
 </div>
 
-      {/* Disclaimer at the bottom */}
-      <footer className="text-center text-sm text-[#8b9cb3] mt-8">
-        <strong className="font-bold">Disclaimer:</strong> This website is not affiliated with or owned by Salad Technologies. It uses data provided through the official Salad API for informational purposes only.
-      </footer>
+{/* Disclaimer at the bottom */}
+<footer className="text-center text-sm text-[#8b9cb3] mt-8 bg-[#112240] p-6 rounded-lg shadow-lg max-w-6xl mx-auto">
+  <div className="mb-4">
+    <strong className="font-bold text-[#c3e325]">Disclaimer:</strong>  
+    <span className="block mt-2">
+      This website is not affiliated with or owned by Salad Technologies. It uses data provided through the official Salad API for informational purposes only.
+    </span>
+  </div>
+  <div className="mb-4">
+  <strong className="text-[#c3e325]"> Made By:</strong> 
+    <span> Pixel Sized Tech</span>.  
+  </div>
+  <div className="flex justify-center gap-4 text-[#8b9cb3]">
+    <a
+      href="https://www.youtube.com/@PixelSizedTech"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="hover:text-[#c3e325] transition-colors duration-300"
+    >
+      YouTube
+    </a>
+    <a
+      href="https://www.tiktok.com/@pixel_sized_tech"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="hover:text-[#c3e325] transition-colors duration-300"
+    >
+      TikTok
+    </a>
+    <a
+      href="https://bit.ly/Salad-PIXEL"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="hover:text-[#c3e325] transition-colors duration-300"
+    >
+      Salad Referral
+    </a>
+  </div>
+</footer>
+
+
     </div>
   )
 }
