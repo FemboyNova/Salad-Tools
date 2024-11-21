@@ -28,8 +28,8 @@ export default function SaladNetworkMonitor() {
   }, [])
 
   const getDemandBadge = (utilizationPct) => {
-    if (utilizationPct >= 70) return { text: 'High', className: 'bg-[#c3e325]' }
-    if (utilizationPct >= 40) return { text: 'Moderate', className: 'bg-[#e8ff47]' }
+    if (utilizationPct >= 80) return { text: 'High', className: 'bg-[#c3e325]' }
+    if (utilizationPct >= 50) return { text: 'Moderate', className: 'bg-[#e8ff47]' }
     return { text: 'Low', className: 'bg-[#6b7280]' }
   }
 
@@ -97,61 +97,96 @@ export default function SaladNetworkMonitor() {
 
       <div className="overflow-x-auto flex justify-center">
   <table className="w-full max-w-6xl border-collapse bg-[#112240] rounded-lg shadow-lg">
-    <thead>
-      <tr className="bg-[#c3e325] text-[#0a192f]">
-        <th className="p-4 text-left cursor-pointer hover:bg-[#e8ff47]" onClick={() => sortData('name')}>
-          GPU <SortIcon column="name" />
-        </th>
-        <th className="p-4 text-left cursor-pointer hover:bg-[#e8ff47]" onClick={() => sortData('recommendedSpecs')}>
-          Recommended Specs <SortIcon column="recommendedSpecs" />
-        </th>
-        <th className="p-4 text-left cursor-pointer hover:bg-[#e8ff47]" onClick={() => sortData('demand')}>
-          Demand <SortIcon column="demand" />
-        </th>
-        <th className="p-4 text-left cursor-pointer hover:bg-[#e8ff47]" onClick={() => sortData('avgEarnings')}>
-          Average Earnings 24/h <SortIcon column="avgEarnings" />
-        </th>
-        <th className="p-4 text-left cursor-pointer hover:bg-[#e8ff47]" onClick={() => sortData('avgRunningTime')}>
-          Average Running Time 24/h <SortIcon column="avgRunningTime" />
-        </th>
+  <thead>
+  <tr className="bg-[#c3e325] text-[#0a192f]">
+    <th className="p-4 text-center cursor-pointer hover:bg-[#e8ff47] w-1/5" onClick={() => sortData('name')}>
+      <div className="flex items-center justify-center gap-2">
+        <span className="truncate">GPU</span>
+        <span className="w-4 h-4 flex-shrink-0">
+          <SortIcon column="name" />
+        </span>
+      </div>
+    </th>
+    <th className="p-4 text-center cursor-pointer hover:bg-[#e8ff47] w-1/5" onClick={() => sortData('recommendedSpecs')}>
+      <div className="flex items-center justify-center gap-2">
+        <span className="truncate">Recommended Specs</span>
+        <span className="w-4 h-4 flex-shrink-0">
+          <SortIcon column="recommendedSpecs" />
+        </span>
+      </div>
+    </th>
+    <th className="p-4 text-center cursor-pointer hover:bg-[#e8ff47] w-1/5" onClick={() => sortData('demand')}>
+      <div className="flex items-center justify-center gap-2">
+        <span className="truncate">Demand</span>
+        <span className="w-4 h-4 flex-shrink-0">
+          <SortIcon column="demand" />
+        </span>
+      </div>
+    </th>
+    <th className="p-4 text-center cursor-pointer hover:bg-[#e8ff47] w-1/5" onClick={() => sortData('avgEarnings')}>
+      <div className="flex items-center justify-center gap-2">
+        <span className="truncate">Average Earnings 24/h</span>
+        <span className="w-4 h-4 flex-shrink-0">
+          <SortIcon column="avgEarnings" />
+        </span>
+      </div>
+    </th>
+    <th className="p-4 text-center cursor-pointer hover:bg-[#e8ff47] w-1/5" onClick={() => sortData('avgRunningTime')}>
+      <div className="flex items-center justify-center gap-2">
+        <span className="truncate">Average Running Time 24/h</span>
+        <span className="w-4 h-4 flex-shrink-0">
+          <SortIcon column="avgRunningTime" />
+        </span>
+      </div>
+    </th>
+  </tr>
+</thead>
+<tbody>
+  {gpuData.map((gpu, index) => {
+    const demand = getDemandBadge(gpu.utilizationPct);
+    const hourlyRate = {
+      min: gpu.earningRates.minEarningRate.toFixed(3),
+      max: gpu.earningRates.maxEarningRate.toFixed(3),
+    };
+    
+    return (
+      <tr
+        key={index}
+        className={`${
+          index % 2 === 0 ? 'bg-[#1e2a47]' : 'bg-[#112240]'
+        } hover:bg-[#2c3e54] transition-all duration-300`}
+      >
+        <td className="p-4 text-center">
+          <div className="font-bold">{gpu.name}</div>
+          <div className="text-sm text-[#8b9cb3]">
+            HOURLY RATE
+            <br />
+            ${hourlyRate.min} - ${hourlyRate.max}
+          </div>
+        </td>
+        <td className="p-4 text-center text-white">
+          {gpu.recommendedSpecs.ramGb}GB System RAM
+        </td>
+        <td className="p-4 text-center">
+          <span
+            className={`px-4 py-1 rounded-full text-black ${demand.className}`}
+          >
+            {demand.text}
+          </span>
+          <div className="text-sm mt-2 text-[#8b9cb3]">
+            Total GPUs rented: {gpu.utilizationPct}%
+          </div>
+        </td>
+        <td className="p-4 text-center text-white">
+          ${gpu.earningRates.avgEarning.toFixed(2)}
+        </td>
+        <td className="p-4 text-center text-white">
+          {(gpu.earningRates.avgEarningTimeMinutes / 60).toFixed(1)} hours
+        </td>
       </tr>
-    </thead>
-    <tbody>
-      {gpuData.map((gpu, index) => {
-        const demand = getDemandBadge(gpu.utilizationPct)
-        const hourlyRate = {
-          min: (gpu.earningRates.minEarningRate).toFixed(3),
-          max: (gpu.earningRates.maxEarningRate).toFixed(3)
-        }
-
-        return (
-          <tr key={index} className={`${index % 2 === 0 ? 'bg-[#1e2a47]' : 'bg-[#112240]'} hover:bg-[#2c3e54] transition-all duration-300`}>
-            <td className="p-4">
-              <div className="font-bold">{gpu.name}</div>
-              <div className="text-sm text-[#8b9cb3]">
-                HOURLY RATE
-                <br />
-                ${hourlyRate.min} - ${hourlyRate.max}
-              </div>
-            </td>
-            <td className="p-4 text-white">
-              {gpu.recommendedSpecs.ramGb}GB System RAM
-            </td>
-            <td className="p-4">
-              <span className={`px-4 py-1 rounded-full text-black ${demand.className}`}>
-                {demand.text}
-              </span>
-            </td>
-            <td className="p-4 text-white">
-              ${gpu.earningRates.avgEarning.toFixed(2)}
-            </td>
-            <td className="p-4 text-white">
-              {(gpu.earningRates.avgEarningTimeMinutes / 60).toFixed(1)} hours
-            </td>
-          </tr>
-        )
-      })}
-    </tbody>
+    );
+  })}
+</tbody>
   </table>
 </div>
 
