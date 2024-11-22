@@ -182,17 +182,17 @@ export default function SaladNetworkMonitor() {
     </th>
     <th className="p-6 text-center cursor-pointer hover:bg-[#e8ff47] w-1/6" onClick={() => sortData('vastVerified')}>
       <div className="flex items-center justify-center gap-2">
-        <span className="truncate">Vast Verified Hourly Rate</span>
+        <span className="truncate">Vast Unverified Hourly Rate</span>
         <span className="w-4 h-4 relative flex justify-center items-center">
-          <SortIcon column="vastVerified" />
+          <SortIcon column="vastUnverified" />
         </span>
       </div>
     </th>
     <th className="p-6 text-center cursor-pointer hover:bg-[#e8ff47] w-1/6" onClick={() => sortData('vastUnverified')}>
       <div className="flex items-center justify-center gap-2">
-        <span className="truncate">Vast Unverified Hourly Rate</span>
+        <span className="truncate">Vast verified Hourly Rate</span>
         <span className="w-4 h-4 relative flex justify-center items-center">
-          <SortIcon column="vastUnverified" />
+          <SortIcon column="vastVerified" />
         </span>
       </div>
     </th>
@@ -247,10 +247,10 @@ export default function SaladNetworkMonitor() {
         </td>
         {/* Separate Verified and Unverified Vast Hourly Rate */}
         <td className="p-4 text-center text-white">
-          {vastVerified}
+          {vastUnverified}
         </td>
         <td className="p-4 text-center text-white">
-          {vastUnverified}
+          {vastVerified}
         </td>
       </tr>
     );
