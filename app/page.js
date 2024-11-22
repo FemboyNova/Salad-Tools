@@ -180,7 +180,7 @@ export default function SaladNetworkMonitor() {
         </span>
       </div>
     </th>
-    <th className="p-6 text-center cursor-pointer hover:bg-[#e8ff47] w-1/6" onClick={() => sortData('vastVerified')}>
+    <th className="p-6 text-center cursor-pointer hover:bg-[#e8ff47] w-1/6" onClick={() => sortData('vastUnverified')}>
       <div className="flex items-center justify-center gap-2">
         <span className="truncate">Vast Unverified Hourly Rate</span>
         <span className="w-4 h-4 relative flex justify-center items-center">
@@ -188,7 +188,7 @@ export default function SaladNetworkMonitor() {
         </span>
       </div>
     </th>
-    <th className="p-6 text-center cursor-pointer hover:bg-[#e8ff47] w-1/6" onClick={() => sortData('vastUnverified')}>
+    <th className="p-6 text-center cursor-pointer hover:bg-[#e8ff47] w-1/6" onClick={() => sortData('vastVerified')}>
       <div className="flex items-center justify-center gap-2">
         <span className="truncate">Vast verified Hourly Rate</span>
         <span className="w-4 h-4 relative flex justify-center items-center">
