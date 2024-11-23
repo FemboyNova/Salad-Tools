@@ -216,6 +216,9 @@ export default function SaladNetworkMonitor() {
       ? `$${gpu.vastEarningRates.unverified.price10th.toFixed(2)} - $${gpu.vastEarningRates.unverified.price90th.toFixed(2)}`
       : 'N/A';
 
+    const vastUnverifiedCount = gpu.vastEarningRates.unverified?.count || 0; // Default to 0 if count is undefined
+    const vastVerifiedCount = gpu.vastEarningRates.verified?.count || 0; // Default to 0 if count is undefined
+
     return (
       <tr
         key={index}
@@ -249,9 +252,13 @@ export default function SaladNetworkMonitor() {
         {/* Separate Verified and Unverified Vast Hourly Rate */}
         <td className="p-4 text-center text-white">
           {vastUnverified}
+          <br />
+          <span className="text-sm text-[#8b9cb3]">Machines: {vastUnverifiedCount}</span>
         </td>
         <td className="p-4 text-center text-white">
           {vastVerified}
+          <br />
+          <span className="text-sm text-[#8b9cb3]">Machines: {vastVerifiedCount}</span>
         </td>
       </tr>
     );

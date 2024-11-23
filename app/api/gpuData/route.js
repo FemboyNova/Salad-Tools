@@ -58,12 +58,12 @@ export async function GET() {
                 verified: {
                     price10th: model.stats.rented.verified[0]?.price_10th_percentile || null,
                     price90th: model.stats.rented.verified[0]?.price_90th_percentile || null,
-                    priceMedian: model.stats.rented.verified[0]?.price_median || null,
+                    count: model.stats.rented.verified[0]?.count || null,
                 },
                 unverified: {
                     price10th: model.stats.rented.unverified[0]?.price_10th_percentile || null,
                     price90th: model.stats.rented.unverified[0]?.price_90th_percentile || null,
-                    priceMedian: model.stats.rented.unverified[0]?.price_median || null,
+                    count: model.stats.rented.unverified[0]?.count || null,
                 },
             },
         }));
