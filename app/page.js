@@ -186,7 +186,7 @@ export default function SaladNetworkMonitor() {
                     <Tooltip>
                       <TooltipTrigger className="w-full h-full">
                         <div className="flex items-center justify-center gap-1">
-                          <span className="truncate">Avg R Time</span>
+                          <span className="truncate">Avg  Time</span>
                           <span className="w-6 h-6 relative flex justify-center items-center">
                             <SortIcon column="avgRunningTime" />
                           </span>
