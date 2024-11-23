@@ -128,8 +128,9 @@ export default function SaladNetworkMonitor() {
   </p>
 
   
-      <div className="overflow-x-auto flex justify-center">
-        <table className="w-full max-w-8xl border-collapse bg-[#112240] rounded-lg shadow-lg">
+  <div className="overflow-x-auto flex justify-center">
+  <div className="max-w-8xl w-full">
+    <table className="w-full border-collapse bg-[#112240] rounded-lg shadow-lg">
         <thead>
   <tr className="bg-[#c3e325] text-[#0a192f]">
     <th className="p-6 text-center cursor-pointer hover:bg-[#e8ff47] w-1/6" onClick={() => sortData('name')}>
@@ -256,11 +257,9 @@ export default function SaladNetworkMonitor() {
     );
   })}
 </tbody>
-
-
-        </table>
-      </div>
-
+</table>
+  </div>
+</div>
       {/* Disclaimer at the bottom */}
       <footer className="text-center text-sm text-[#8b9cb3] mt-8 bg-[#112240] p-6 rounded-lg shadow-lg max-w-6xl mx-auto">
         <div className="mb-4">
