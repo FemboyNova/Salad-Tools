@@ -216,7 +216,7 @@ export default function SaladNetworkMonitor() {
                     <Tooltip>
                       <TooltipTrigger className="w-full h-full">
                         <div className="flex items-center justify-center gap-1">
-                          <span className="truncate">Hourly</span>
+                          <span className="truncate">Hourly Rate</span>
                           <span className="w-6 h-6 relative flex justify-center items-center">
                             <SortIcon column="hourlyEarnings" />
                           </span>
