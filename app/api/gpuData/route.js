@@ -1,59 +1,63 @@
 export async function GET() {
-    try {
-        // Fetch data from the Salad and Vast APIs
-        const saladRes = await fetch("https://app-api.salad.com/api/v2/demand-monitor/gpu");
-        const vastRes = await fetch("https://500.farm/vastai-exporter/gpu-stats");
-
-        if (!saladRes.ok || !vastRes.ok) {
-            throw new Error("Failed to fetch data from one or both APIs");
+    const fetchWithTimeout = async (url, timeout = 5000) => {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), timeout);
+        try {
+            const response = await fetch(url, { signal: controller.signal });
+            clearTimeout(timer);
+            if (!response.ok) {
+                throw new Error(`Error fetching ${url}: ${response.statusText}`);
+            }
+            return response;
+        } catch (error) {
+            clearTimeout(timer);
+            throw new Error(`Timeout or fetch error for ${url}: ${error.message}`);
         }
+    };
 
+    try {
+        // Fetch Salad and Vast API data in parallel
+        const [saladRes, vastRes] = await Promise.all([
+            fetchWithTimeout("https://app-api.salad.com/api/v2/demand-monitor/gpu"),
+            fetchWithTimeout("https://500.farm/vastai-exporter/gpu-stats"),
+        ]);
+
+        // Parse JSON responses
         const saladData = await saladRes.json();
         const vastData = await vastRes.json();
 
-        // Function to normalize GPU names for processing (used for matching data)
+        // Normalize and process data
         function normalizeGpuNameForProcessing(name) {
-            // Remove "NVIDIA" or "GeForce"
             let normalized = name.replace(/nvidia|geforce/gi, "").trim();
-
-            // Remove anything in parentheses (e.g., "12GB VRAM")
             normalized = normalized.replace(/\(.*?\)/g, "").trim();
-
-            // Replace "Super" with "S"
             if (/super/i.test(normalized)) {
-                normalized = normalized.replace(/super/i, "").trim(); // Remove "Super" first
-                normalized = normalized.replace(/(\d+)/, "$1S"); // Add "S" after the number
+                normalized = normalized.replace(/super/i, "").trim();
+                normalized = normalized.replace(/(\d+)/, "$1S");
             }
-
-            return normalized.trim(); // Trim any extra spaces after modifications
+            return normalized.trim();
         }
 
-        // Function to normalize GPU name for UI display
         function normalizeGpuNameForUI(name) {
-            // Format for UI (e.g., "RTX 4070 TI Super" instead of "RTX 4070 Ti S")
-            let displayName = name.replace(/nvidia|geforce/gi, "").trim();
-            return displayName;
+            return name.replace(/nvidia|geforce/gi, "").trim();
         }
 
-        // Normalize Salad data to include utilizationPct, recommendedSpecs, and normalized names
         const normalizedSaladData = saladData.map((gpu) => ({
             name: gpu.name,
-            displayName: normalizeGpuNameForUI(gpu.name), // Add display name for UI
-            normalizedName: normalizeGpuNameForProcessing(gpu.name), // For processing (matching)
-            recommendedSpecs: { ramGb: gpu.recommendedSpecs?.ramGb || null }, // Default 16GB RAM if missing
+            displayName: normalizeGpuNameForUI(gpu.name),
+            normalizedName: normalizeGpuNameForProcessing(gpu.name),
+            recommendedSpecs: { ramGb: gpu.recommendedSpecs?.ramGb || null },
             saladEarningRates: {
                 avgEarning: gpu.earningRates.avgEarning || null,
                 avgEarningTimeMinutes: gpu.earningRates.avgEarningTimeMinutes || null,
                 maxEarningRate: gpu.earningRates.maxEarningRate || null,
                 minEarningRate: gpu.earningRates.minEarningRate || null,
             },
-            utilizationPct: gpu.utilizationPct || null, // Include utilizationPct from Salad
+            utilizationPct: gpu.utilizationPct || null,
         }));
 
-        // Normalize Vast data
         const normalizedVastData = vastData.models.map((model) => ({
             name: model.name,
-            normalizedName: normalizeGpuNameForProcessing(model.name), // For processing (matching)
+            normalizedName: normalizeGpuNameForProcessing(model.name),
             vastEarningRates: {
                 verified: {
                     price10th: model.stats.rented.verified[0]?.price_10th_percentile || null,
@@ -68,15 +72,14 @@ export async function GET() {
             },
         }));
 
-        // Merge Salad and Vast data by normalized GPU name
         const mergedData = normalizedSaladData.map((saladGpu) => {
             const vastGpu = normalizedVastData.find(
                 (vastGpu) => vastGpu.normalizedName === saladGpu.normalizedName
             );
 
             return {
-                name: saladGpu.name, // Original name
-                displayName: saladGpu.displayName, // For UI display
+                name: saladGpu.name,
+                displayName: saladGpu.displayName,
                 recommendedSpecs: saladGpu.recommendedSpecs,
                 saladEarningRates: saladGpu.saladEarningRates,
                 utilizationPct: saladGpu.utilizationPct,
@@ -84,7 +87,6 @@ export async function GET() {
             };
         });
 
-        // Respond with the merged data
         return new Response(JSON.stringify(mergedData), { status: 200 });
     } catch (error) {
         console.error("Error fetching GPU data:", error);
