@@ -122,7 +122,7 @@ export default function SaladNetworkMonitor() {
   return (
 <div className="min-h-screen bg-[#0a192f] p-4 text-[#c3e325] font-sans">
   <div className="max-w-screen-2xl mx-auto">
-    <h1 className="text-3xl font-bold mb-2 text-center">Salad Network Monitor (API currently providing simulated data)</h1>
+    <h1 className="text-3xl font-bold mb-2 text-center">Salad Network Monitor</h1>
 <p className="text-[#8b9cb3] text-sm text-center mb-2">
   This platform compares GPU earnings using data from Salad and vast.ai.
    The data provides an idea of typical earnings, but keep in mind that unusually high hourly rates might be due to outliers,
