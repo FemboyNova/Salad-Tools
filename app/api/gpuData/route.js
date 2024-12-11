@@ -43,14 +43,14 @@ export async function GET() {
 
         const normalizedSaladData = saladData.map((gpu) => ({
             name: gpu.name,
-            displayName: normalizeGpuNameForUI(gpu.name),
+            displayName: gpu.displayName,
             normalizedName: normalizeGpuNameForProcessing(gpu.name),
             recommendedSpecs: { ramGb: gpu.recommendedSpecs?.ramGb || null },
             saladEarningRates: {
-                avgEarning: gpu.earningRates.avgEarning || null,
-                avgEarningTimeMinutes: gpu.earningRates.avgEarningTimeMinutes || null,
+                avgEarning: gpu.earningRates.avgEarningRate || null,
                 maxEarningRate: gpu.earningRates.maxEarningRate || null,
                 minEarningRate: gpu.earningRates.minEarningRate || null,
+                top25PctEarningRate: gpu.earningRates.top25PctEarningRate || null,
             },
             utilizationPct: gpu.utilizationPct || null,
         }));
