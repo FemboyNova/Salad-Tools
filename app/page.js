@@ -129,7 +129,7 @@ export default function SaladNetworkMonitor() {
           Hover over the category names to learn more about what they mean.
         </p>
         <p className="text-[#c3e325] font-bold text-sm text-center mb-4">
-          <strong>Warning:</strong> The Salad API may contain bugs, such as showing the top 25% rate higher than the max rate or not displaying demand for easily available GPUs. Please interpret the data with caution.
+          <strong>Warning:</strong> The salad API is still a work in progress, please do not take this data as final and there may be bugs
         </p>
         <div className="overflow-x-auto mt-8">
           <div className="w-full">
