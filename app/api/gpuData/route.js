@@ -45,15 +45,18 @@ export async function GET() {
             name: gpu.name,
             displayName: gpu.displayName,
             normalizedName: normalizeGpuNameForProcessing(gpu.name),
-            recommendedSpecs: { ramGb: gpu.recommendedSpecs?.ramGb || null },
+            demandTier: gpu.demandTier || "unknown",  // Ensure this field is always present
+            demandTierName: gpu.demandTierName || "Unknown",
+            recommendedSpecs: { ramGb: gpu.recommendedSpecs?.ramGb || 0 }, // Default to 0 if missing
             saladEarningRates: {
-                avgEarning: gpu.earningRates.avgEarningRate || null,
-                maxEarningRate: gpu.earningRates.maxEarningRate || null,
-                minEarningRate: gpu.earningRates.minEarningRate || null,
-                top25PctEarningRate: gpu.earningRates.top25PctEarningRate || null,
+                avgEarning: gpu.earningRates?.avgEarningRate ?? 0, // Default to 0 if null or undefined
+                maxEarningRate: gpu.earningRates?.maxEarningRate ?? 0,
+                minEarningRate: gpu.earningRates?.minEarningRate ?? 0,
+                top25PctEarningRate: gpu.earningRates?.top25PctEarningRate ?? 0,
             },
-            utilizationPct: gpu.utilizationPct || null,
+            utilizationPct: gpu.utilizationPct ?? 0, // Default to 0 if missing
         }));
+        
 
         const normalizedVastData = vastData.models.map((model) => ({
             name: model.name,

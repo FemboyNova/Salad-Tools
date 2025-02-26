@@ -128,9 +128,6 @@ export default function SaladNetworkMonitor() {
         <p className="text-[#c3e325] text-sm text-center mb-2">
           Hover over the category names to learn more about what they mean.
         </p>
-        <p className="text-[#c3e325] font-bold text-sm text-center mb-4">
-          <strong>Warning:</strong> The salad API is still a work in progress, please do not take this data as final and there may be bugs
-        </p>
         <div className="overflow-x-auto mt-8">
           <div className="w-full">
             <table className="w-full border-collapse bg-[#112240] rounded-lg shadow-lg text-sm">
