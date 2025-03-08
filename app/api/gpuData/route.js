@@ -16,28 +16,39 @@ export async function GET() {
     };
 
     try {
-        const [saladRes, vastRes] = await Promise.all([
+        const [saladRes, vastRes] = await Promise.allSettled([
             fetchWithTimeout("https://app-api.salad.com/api/v2/demand-monitor/gpu"),
             fetchWithTimeout("https://500.farm/vastai-exporter/gpu-stats"),
         ]);
 
-        let saladData, vastData;
-        try {
-            saladData = await saladRes.json();
-        } catch (error) {
-            throw new Error("Failed to parse JSON from Salad API: " + error.message);
-        }
-        try {
-            vastData = await vastRes.json();
-        } catch (error) {
-            throw new Error("Failed to parse JSON from Vast API: " + error.message);
+        let saladData = [], vastData = { models: [] };
+
+        if (saladRes.status === "fulfilled") {
+            try {
+                saladData = await saladRes.value.json();
+                if (!Array.isArray(saladData)) {
+                    throw new Error("Unexpected Salad API response format: Expected an array");
+                }
+            } catch (error) {
+                throw new Error("Failed to parse JSON from Salad API: " + error.message);
+            }
+        } else {
+            throw new Error("Failed to fetch Salad API: " + saladRes.reason.message);
         }
 
-        if (!Array.isArray(saladData)) {
-            throw new Error("Unexpected Salad API response format: Expected an array");
-        }
-        if (!vastData.models || !Array.isArray(vastData.models)) {
-            throw new Error("Unexpected Vast API response format: Expected an object with a 'models' array");
+        if (vastRes.status === "fulfilled") {
+            try {
+                vastData = await vastRes.value.json();
+                if (!vastData.models || !Array.isArray(vastData.models)) {
+                    throw new Error("Unexpected Vast API response format: Expected an object with a 'models' array");
+                }
+            } catch (error) {
+                console.warn("Failed to parse JSON from Vast API: " + error.message);
+                vastData = { models: [] }; // Fallback to empty data
+            }
+        } else {
+            console.warn("Failed to fetch Vast API: " + vastRes.reason.message);
+            vastData = { models: [] }; // Fallback to empty data
         }
 
         function normalizeGpuNameForProcessing(name) {
@@ -71,14 +82,14 @@ export async function GET() {
             normalizedName: normalizeGpuNameForProcessing(model.name || "Unknown"),
             vastEarningRates: {
                 verified: {
-                    price10th: model.stats.rented.verified?.[0]?.price_10th_percentile || null,
-                    price90th: model.stats.rented.verified?.[0]?.price_90th_percentile || null,
-                    count: model.stats.rented.verified?.[0]?.count || null,
+                    price10th: model.stats.rented.verified?.[0]?.price_10th_percentile || "N/A",
+                    price90th: model.stats.rented.verified?.[0]?.price_90th_percentile || "N/A",
+                    count: model.stats.rented.verified?.[0]?.count || "N/A",
                 },
                 unverified: {
-                    price10th: model.stats.rented.unverified?.[0]?.price_10th_percentile || null,
-                    price90th: model.stats.rented.unverified?.[0]?.price_90th_percentile || null,
-                    count: model.stats.rented.unverified?.[0]?.count || null,
+                    price10th: model.stats.rented.unverified?.[0]?.price_10th_percentile || "N/A",
+                    price90th: model.stats.rented.unverified?.[0]?.price_90th_percentile || "N/A",
+                    count: model.stats.rented.unverified?.[0]?.count || "N/A",
                 },
             },
         }));
@@ -94,13 +105,19 @@ export async function GET() {
                 recommendedSpecs: saladGpu.recommendedSpecs,
                 saladEarningRates: saladGpu.saladEarningRates,
                 utilizationPct: saladGpu.utilizationPct,
-                vastEarningRates: vastGpu ? vastGpu.vastEarningRates : { verified: null, unverified: null },
+                vastEarningRates: vastGpu ? vastGpu.vastEarningRates : {
+                    verified: { price10th: "N/A", price90th: "N/A", count: "N/A" },
+                    unverified: { price10th: "N/A", price90th: "N/A", count: "N/A" }
+                },
             };
         });
 
         return new Response(JSON.stringify(mergedData), { status: 200 });
     } catch (error) {
         console.error("Critical error fetching GPU data:", error);
-        return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { "Content-Type": "application/json" } });
+        return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" }
+        });
     }
 }
