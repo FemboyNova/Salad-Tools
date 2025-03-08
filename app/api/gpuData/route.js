@@ -6,27 +6,40 @@ export async function GET() {
             const response = await fetch(url, { signal: controller.signal });
             clearTimeout(timer);
             if (!response.ok) {
-                throw new Error(`Error fetching ${url}: ${response.statusText}`);
+                throw new Error(`HTTP error ${response.status} - ${response.statusText} while fetching ${url}`);
             }
             return response;
         } catch (error) {
             clearTimeout(timer);
-            throw new Error(`Timeout or fetch error for ${url}: ${error.message}`);
+            throw new Error(`Request failed for ${url}: ${error.message}`);
         }
     };
 
     try {
-        // Fetch Salad and Vast API data in parallel
         const [saladRes, vastRes] = await Promise.all([
             fetchWithTimeout("https://app-api.salad.com/api/v2/demand-monitor/gpu"),
             fetchWithTimeout("https://500.farm/vastai-exporter/gpu-stats"),
         ]);
 
-        // Parse JSON responses
-        const saladData = await saladRes.json();
-        const vastData = await vastRes.json();
+        let saladData, vastData;
+        try {
+            saladData = await saladRes.json();
+        } catch (error) {
+            throw new Error("Failed to parse JSON from Salad API: " + error.message);
+        }
+        try {
+            vastData = await vastRes.json();
+        } catch (error) {
+            throw new Error("Failed to parse JSON from Vast API: " + error.message);
+        }
 
-        // Normalize and process data
+        if (!Array.isArray(saladData)) {
+            throw new Error("Unexpected Salad API response format: Expected an array");
+        }
+        if (!vastData.models || !Array.isArray(vastData.models)) {
+            throw new Error("Unexpected Vast API response format: Expected an object with a 'models' array");
+        }
+
         function normalizeGpuNameForProcessing(name) {
             let normalized = name.replace(/nvidia|geforce/gi, "").trim();
             normalized = normalized.replace(/\(.*?\)/g, "").trim();
@@ -37,40 +50,35 @@ export async function GET() {
             return normalized.trim();
         }
 
-        function normalizeGpuNameForUI(name) {
-            return name.replace(/nvidia|geforce/gi, "").trim();
-        }
-
         const normalizedSaladData = saladData.map((gpu) => ({
-            name: gpu.name,
-            displayName: gpu.displayName,
-            normalizedName: normalizeGpuNameForProcessing(gpu.name),
-            demandTier: gpu.demandTier || "unknown",  // Ensure this field is always present
+            name: gpu.name || "Unknown GPU",
+            displayName: gpu.displayName || "Unknown GPU",
+            normalizedName: normalizeGpuNameForProcessing(gpu.name || "Unknown"),
+            demandTier: gpu.demandTier || "unknown",
             demandTierName: gpu.demandTierName || "Unknown",
-            recommendedSpecs: { ramGb: gpu.recommendedSpecs?.ramGb || 0 }, // Default to 0 if missing
+            recommendedSpecs: { ramGb: gpu.recommendedSpecs?.ramGb || 0 },
             saladEarningRates: {
-                avgEarning: gpu.earningRates?.avgEarningRate ?? 0, // Default to 0 if null or undefined
+                avgEarning: gpu.earningRates?.avgEarningRate ?? 0,
                 maxEarningRate: gpu.earningRates?.maxEarningRate ?? 0,
                 minEarningRate: gpu.earningRates?.minEarningRate ?? 0,
                 top25PctEarningRate: gpu.earningRates?.top25PctEarningRate ?? 0,
             },
-            utilizationPct: gpu.utilizationPct ?? 0, // Default to 0 if missing
+            utilizationPct: gpu.utilizationPct ?? 0,
         }));
-        
 
         const normalizedVastData = vastData.models.map((model) => ({
-            name: model.name,
-            normalizedName: normalizeGpuNameForProcessing(model.name),
+            name: model.name || "Unknown GPU",
+            normalizedName: normalizeGpuNameForProcessing(model.name || "Unknown"),
             vastEarningRates: {
                 verified: {
-                    price10th: model.stats.rented.verified[0]?.price_10th_percentile || null,
-                    price90th: model.stats.rented.verified[0]?.price_90th_percentile || null,
-                    count: model.stats.rented.verified[0]?.count || null,
+                    price10th: model.stats.rented.verified?.[0]?.price_10th_percentile || null,
+                    price90th: model.stats.rented.verified?.[0]?.price_90th_percentile || null,
+                    count: model.stats.rented.verified?.[0]?.count || null,
                 },
                 unverified: {
-                    price10th: model.stats.rented.unverified[0]?.price_10th_percentile || null,
-                    price90th: model.stats.rented.unverified[0]?.price_90th_percentile || null,
-                    count: model.stats.rented.unverified[0]?.count || null,
+                    price10th: model.stats.rented.unverified?.[0]?.price_10th_percentile || null,
+                    price90th: model.stats.rented.unverified?.[0]?.price_90th_percentile || null,
+                    count: model.stats.rented.unverified?.[0]?.count || null,
                 },
             },
         }));
@@ -92,7 +100,7 @@ export async function GET() {
 
         return new Response(JSON.stringify(mergedData), { status: 200 });
     } catch (error) {
-        console.error("Error fetching GPU data:", error);
-        return new Response("Failed to fetch GPU data", { status: 500 });
+        console.error("Critical error fetching GPU data:", error);
+        return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { "Content-Type": "application/json" } });
     }
 }
