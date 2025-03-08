@@ -251,13 +251,15 @@ export default function SaladNetworkMonitor() {
                     top25: (gpu.saladEarningRates.top25PctEarningRate * 24).toFixed(2),
                   };
 
-                  const vastVerified = gpu.vastEarningRates.verified && gpu.vastEarningRates.verified.price10th !== null && gpu.vastEarningRates.verified.price10th !== undefined
-                    ? `$${gpu.vastEarningRates.verified.price10th.toFixed(2)} - $${gpu.vastEarningRates.verified.price90th.toFixed(2)}`
-                    : 'N/A';
+                  const formatPrice = (value) => (typeof value === "number" ? `$${value.toFixed(2)}` : "N/A");
 
-                  const vastUnverified = gpu.vastEarningRates.unverified && gpu.vastEarningRates.unverified.price10th !== null && gpu.vastEarningRates.unverified.price10th !== undefined
-                    ? `$${gpu.vastEarningRates.unverified.price10th.toFixed(2)} - $${gpu.vastEarningRates.unverified.price90th.toFixed(2)}`
+                  const vastVerified = gpu.vastEarningRates.verified 
+                    ? `${formatPrice(gpu.vastEarningRates.verified.price10th)} - ${formatPrice(gpu.vastEarningRates.verified.price90th)}`
                     : 'N/A';
+                  
+                  const vastUnverified = gpu.vastEarningRates.unverified 
+                    ? `${formatPrice(gpu.vastEarningRates.unverified.price10th)} - ${formatPrice(gpu.vastEarningRates.unverified.price90th)}`
+                    : 'N/A';                  
 
                   const vastUnverifiedCount = gpu.vastEarningRates.unverified?.count || 0;
                   const vastVerifiedCount = gpu.vastEarningRates.verified?.count || 0;
