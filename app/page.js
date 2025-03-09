@@ -165,7 +165,7 @@ export default function SaladNetworkMonitor() {
           <div className="bg-[#112240] rounded-xl p-6 shadow-lg">
             <h2 className="text-2xl font-bold mb-4">What is Salad?</h2>
             <p className="text-white mb-4">
-              Salad is a simple app that lets you share your computer's GPU power when you're not using it. In return,
+              Salad is a simple app that lets you share your computer&apos;s GPU power when you&apos;re not using it. In return,
               you earn rewards like gift cards, games, and more. It works by securely running workloads in virtual machine like environments.
             </p>
             <p className="text-white mb-4">
@@ -208,7 +208,7 @@ export default function SaladNetworkMonitor() {
               <ol className="list-decimal list-inside text-white space-y-2">
                 <li>Download and install the Salad app on your PC</li>
                 <li>Create an account and set a reward goal</li>
-                <li>Let Salad run when you're not using your computer</li>
+                <li>Let Salad run when you&apos;re not using your computer</li>
                 <li>Earn rewards automatically as your GPU works</li>
                 <li>Redeem your earnings for gift cards, paypal balance, or other rewards</li>
               </ol>
@@ -365,7 +365,7 @@ export default function SaladNetworkMonitor() {
          {/* Integrated Warning Message */}
          <p className="text-sm text-[#ff9a33] text-center mb-6 max-w-3xl mx-auto">
            <span className="text-[#ff9a33] font-semibold">Warning:</span> The average earnings can sometimes be below the minimum earnings. This is due to the way
-           Salad calculates average earnings, it shows the average earning of any machine that has that GPU installed, even if it's running bandwidth sharing, mining, or CPU containers.
+           Salad calculates average earnings, it shows the average earning of any machine that has that GPU installed, even if it&apos;s running bandwidth sharing, mining, or CPU containers.
          </p>
          
          {/* Redesigned Table Section */}
