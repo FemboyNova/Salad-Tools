@@ -433,10 +433,10 @@ export default function SaladNetworkMonitor() {
             <table className="w-full border-collapse text-sm">
               <thead>
                 <tr className="bg-[#1e2a47] border-b border-[#2c3e54]">
-                  <th className="p-4 text-left">
+                  <th className="p-4 text-center">
                     <button
                       onClick={() => sortData("name")}
-                      className="flex items-center font-medium text-[#c3e325] hover:text-[#e8ff47] transition-colors"
+                      className="flex items-center text-center font-medium text-[#c3e325] hover:text-[#e8ff47] transition-colors"
                     >
                       GPU <SortIcon column="name" />
                     </button>
@@ -473,6 +473,7 @@ export default function SaladNetworkMonitor() {
                       Daily Rate <SortIcon column="dayRate" />
                     </button>
                   </th>
+                  {/* Vast Unverified Column Header */}
                   <th className="p-4 text-center">
                     <TooltipProvider>
                       <Tooltip>
@@ -485,11 +486,12 @@ export default function SaladNetworkMonitor() {
                           </button>
                         </TooltipTrigger>
                         <TooltipContent className="bg-[#1a2a3c] text-white p-2 rounded">
-                          <p>Hourly rate for unverified machines on Vast.ai</p>
+                          <p>Hourly and daily rates for unverified machines on Vast.ai</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </th>
+                  {/* Vast Verified Column Header */}
                   <th className="p-4 text-center">
                     <TooltipProvider>
                       <Tooltip>
@@ -502,7 +504,7 @@ export default function SaladNetworkMonitor() {
                           </button>
                         </TooltipTrigger>
                         <TooltipContent className="bg-[#1a2a3c] text-white p-2 rounded">
-                          <p>Hourly rate for verified machines on Vast.ai</p>
+                          <p>Hourly and daily rates for verified machines on Vast.ai</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
@@ -512,28 +514,39 @@ export default function SaladNetworkMonitor() {
               <tbody>
                 {filteredData.length > 0 ? (
                   filteredData.map((gpu, index) => {
-                    const demand = getDemandBadge(gpu.utilizationPct)
+                    const demand = getDemandBadge(gpu.utilizationPct);
                     const dayRate = {
                       min: (gpu.saladEarningRates.minEarningRate * 24).toFixed(2),
                       max: (gpu.saladEarningRates.maxEarningRate * 24).toFixed(2),
                       top25: (gpu.saladEarningRates.top25PctEarningRate * 24).toFixed(2),
-                    }
-
-                    const formatPrice = (value) => (typeof value === "number" ? `$${value.toFixed(2)}` : "N/A")
-
-                    const vastVerified = gpu.vastEarningRates.verified
+                    };
+          
+                    const formatPrice = (value) => (typeof value === "number" && !isNaN(value) ? `$${value.toFixed(2)}` : "N/A");
+          
+                    // Vast Verified Data
+                    const vastVerifiedHourly = gpu.vastEarningRates.verified
                       ? `${formatPrice(gpu.vastEarningRates.verified.price10th)} - ${formatPrice(gpu.vastEarningRates.verified.price90th)}`
-                      : "N/A"
-
-                    const vastUnverified = gpu.vastEarningRates.unverified
+                      : "N/A";
+          
+                    const vastVerifiedDaily = gpu.vastEarningRates.verified
+                      ? `${formatPrice(gpu.vastEarningRates.verified.price10th * 24)} - ${formatPrice(gpu.vastEarningRates.verified.price90th * 24)}`
+                      : "N/A";
+          
+                    const vastVerifiedCount = gpu.vastEarningRates.verified?.count || 0;
+          
+                              // Vast Unverified Data
+                    const vastUnverifiedHourly = gpu.vastEarningRates.unverified
                       ? `${formatPrice(gpu.vastEarningRates.unverified.price10th)} - ${formatPrice(gpu.vastEarningRates.unverified.price90th)}`
-                      : "N/A"
-
-                    const vastUnverifiedCount = gpu.vastEarningRates.unverified?.count || 0
-                    const vastVerifiedCount = gpu.vastEarningRates.verified?.count || 0
-
-                    const averageRate = gpu.saladEarningRates.avgEarning.toFixed(3)
-
+                      : "N/A";
+          
+                    const vastUnverifiedDaily = gpu.vastEarningRates.unverified
+                      ? `${formatPrice(gpu.vastEarningRates.unverified.price10th * 24)} - ${formatPrice(gpu.vastEarningRates.unverified.price90th * 24)}`
+                      : "N/A";
+          
+                    const vastUnverifiedCount = gpu.vastEarningRates.unverified?.count || 0;
+          
+                    const averageRate = gpu.saladEarningRates.avgEarning.toFixed(3);
+          
                     return (
                       <tr
                         key={index}
@@ -542,12 +555,12 @@ export default function SaladNetworkMonitor() {
                         <td className="p-4 text-left">
                           <div className="font-bold text-white">{gpu.displayName}</div>
                         </td>
-                        <td className="p-4 text-center">
+                        <td className="p-4 text-left">
                           <div className="text-white">{gpu.recommendedSpecs.ramGb}GB RAM</div>
                           <div className="text-xs text-[#8b9cb3]">120 GB Storage</div>
                         </td>
-                        <td className="p-4 text-center">
-                          <div className="flex flex-col items-center">
+                        <td className="p-4 text-left">
+                          <div className="flex flex-col items-left">
                             <span className={`px-3 py-1 rounded-full text-xs ${demand.className} mb-1`}>
                               {demand.text}
                             </span>
@@ -564,8 +577,8 @@ export default function SaladNetworkMonitor() {
                             </div>
                           </div>
                         </td>
-                        <td className="p-4 text-center">
-                          <div className="flex flex-col items-center">
+                        <td className="p-4 text-left">
+                          <div className="flex flex-col items-left">
                             <div className="text-lg font-bold text-white">${averageRate}</div>
                             <div className="text-xs text-[#8b9cb3]">
                               Range: ${gpu.saladEarningRates.minEarningRate.toFixed(3)} - $
@@ -576,8 +589,8 @@ export default function SaladNetworkMonitor() {
                             </div>
                           </div>
                         </td>
-                        <td className="p-4 text-center">
-                          <div className="flex flex-col items-center">
+                        <td className="p-4 text-left">
+                          <div className="flex flex-col items-left">
                             <div className="text-lg font-bold text-white">
                               ${(gpu.saladEarningRates.avgEarning * 24).toFixed(2)}
                             </div>
@@ -587,35 +600,54 @@ export default function SaladNetworkMonitor() {
                             <div className="text-xs text-[#c3e325]">Top 25%: ${dayRate.top25}</div>
                           </div>
                         </td>
-                        <td className="p-4 text-center">
-                          <div className="text-white">{vastUnverified}</div>
-                          <div className="text-xs text-[#8b9cb3]">Machines: {vastUnverifiedCount}</div>
+                        {/* Vast Unverified Column */}
+                        <td className="p-4 text-left">
+                          <div className="flex flex-col items-left">
+                            <div className="flex items-center gap-1">
+                              <span className="text-xs text-[#8b9cb3]">Hourly:</span>
+                              <span className="text-white">{vastUnverifiedHourly}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <span className="text-xs text-[#8b9cb3]">Daily:</span>
+                              <span className="text-white">{vastUnverifiedDaily}</span>
+                            </div>
+                            <div className="text-xs text-[#8b9cb3]">Machines: {vastUnverifiedCount}</div>
+                          </div>
                         </td>
-                        <td className="p-4 text-center">
-                          <div className="text-white">{vastVerified}</div>
-                          <div className="text-xs text-[#8b9cb3]">Machines: {vastVerifiedCount}</div>
+                        {/* Vast Verified Column */}
+                        <td className="p-4 text-left">
+                          <div className="flex flex-col items-left">
+                            <div className="flex items-center gap-1">
+                              <span className="text-xs text-[#8b9cb3]">Hourly:</span>
+                              <span className="text-white">{vastVerifiedHourly}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <span className="text-xs text-[#8b9cb3]">Daily:</span>
+                              <span className="text-white">{vastVerifiedDaily}</span>
+                            </div>
+                            <div className="text-xs text-[#8b9cb3]">Machines: {vastVerifiedCount}</div>
+                          </div>
                         </td>
                       </tr>
-                    )
+                    );
                   })
                 ) : (
                   <tr>
-                    <td colSpan={7} className="p-8 text-center text-[#8b9cb3]">
-                      No GPUs match your search criteria. Try adjusting your filters.
+                    <td colSpan="7" className="p-4 text-center text-white">
+                No GPUs match your search criteria. Try adjusting your filters.
                     </td>
                   </tr>
                 )}
               </tbody>
             </table>
           </div>
-
           {/* Card view for mobile */}
           <div className="md:hidden space-y-4">
             {filteredData.length > 0 ? (
               filteredData.map((gpu, index) => {
                 const demand = getDemandBadge(gpu.utilizationPct)
                 const hourlyRate = gpu.saladEarningRates.avgEarning
-                const dailyRate = hourlyRate * 24
+                const dailyRate = typeof hourlyRate === "number" ? hourlyRate * 24 : "N/A";
                 const weeklyRate = dailyRate * 7
 
                 const formatPrice = (value) => (typeof value === "number" ? `$${value.toFixed(2)}` : "N/A")
