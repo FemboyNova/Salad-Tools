@@ -632,33 +632,33 @@ export default function SaladNetworkMonitor() {
                   <Card key={index} className="bg-[#1a2a3c] border-[#2c3e54] border">
                     <CardContent className="p-4">
                       <div className="flex justify-between items-start mb-3">
-                        <h3 className="font-bold text-lg">{gpu.displayName}</h3>
+                        <h3 className="font-bold text-white text-lg">{gpu.displayName}</h3>
                         <span className={`px-2 py-1 rounded-full text-xs ${demand.className}`}>{demand.text}</span>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                          <p className="text-xs text-[#8b9cb3]">Specs</p>
-                          <p className="text-sm">{gpu.recommendedSpecs.ramGb}GB RAM, 120GB Storage</p>
+                          <p className="text-xs text-[#c3e325]">Specs</p>
+                          <p className="text-sm text-white">{gpu.recommendedSpecs.ramGb}GB RAM, 120GB Storage</p>
                         </div>
                         <div>
-                          <p className="text-xs text-[#8b9cb3]">Utilization</p>
-                          <p className="text-sm">{gpu.utilizationPct !== null ? `${gpu.utilizationPct}%` : "N/A"}</p>
+                          <p className="text-xs text-[#c3e325]">Utilization</p>
+                          <p className="text-sm text-white">{gpu.utilizationPct !== null ? `${gpu.utilizationPct}%` : "N/A"}</p>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                          <p className="text-xs text-[#8b9cb3]">Hourly Rate</p>
-                          <p className="text-base font-bold">${hourlyRate.toFixed(3)}</p>
+                          <p className="text-xs text-[#c3e325]">Hourly Rate</p>
+                          <p className="text-base font-bold text-white">${hourlyRate.toFixed(3)}</p>
                           <p className="text-xs text-[#8b9cb3]">
                             Range: ${gpu.saladEarningRates.minEarningRate.toFixed(3)} - $
                             {gpu.saladEarningRates.maxEarningRate.toFixed(3)}
                           </p>
                         </div>
                         <div>
-                          <p className="text-xs text-[#8b9cb3]">Daily Rate</p>
-                          <p className="text-base font-bold">${dailyRate.toFixed(2)}</p>
+                          <p className="text-xs text-[#c3e325]">Daily Rate</p>
+                          <p className="text-base font-bold text-white">${dailyRate.toFixed(2)}</p>
                           <p className="text-xs text-[#8b9cb3]">Weekly: ${weeklyRate.toFixed(2)}</p>
                         </div>
                       </div>
@@ -667,12 +667,12 @@ export default function SaladNetworkMonitor() {
 
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-xs text-[#8b9cb3]">Vast Unverified</p>
-                          <p className="text-sm">{vastUnverified}</p>
+                          <p className="text-xs text-[#c3e325]">Vast Unverified</p>
+                          <p className="text-sm text-white">{vastUnverified}</p>
                         </div>
                         <div>
-                          <p className="text-xs text-[#8b9cb3]">Vast Verified</p>
-                          <p className="text-sm">{vastVerified}</p>
+                          <p className="text-xs text-[#c3e325]">Vast Verified</p>
+                          <p className="text-sm text-white">{vastVerified}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -720,9 +720,18 @@ export default function SaladNetworkMonitor() {
             className="hover:text-[#c3e325] transition-colors duration-300"
           >
             TikTok
+
           </a>
           <a
-            href="https://bit.ly/Salad-PIXEL"
+            href="https://x.com/PixelSizedTech"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-[#c3e325] transition-colors duration-300"
+          >
+            Twitter
+          </a>
+          <a
+            href="https://pixelsizedtech.xyz/"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-[#c3e325] transition-colors duration-300"
