@@ -19,22 +19,13 @@ export const metadata = {
     title: "Community Salad Tools - Useful Tools for the Salad Community",
     description: "Discover a collection of useful tools made specifically for the Salad community. Enhance your experience with our unique tools!",
     url: "https://salad-tools.vercel.app/",
-    siteName: "Community Salad Tools",
-    images: [
-      {
-        url: "https://salad-tools.vercel.app/salad.png",
-        width: 800,
-        height: 600,
-      },
-    ],
+    siteName: "salad-tools.vercel.app",
     locale: "en_US",
     type: "website",
   },
   twitter: {
-    card: "summary_large_image",
     title: "Community Salad Tools - Useful Tools for the Salad Community",
     description: "Discover a collection of useful tools made specifically for the Salad community. Enhance your experience with our unique tools!",
-    images: ["https://salad-tools.vercel.app/salad.png"],
   },
   alternates: {
     canonical: "https://salad-tools.vercel.app/",
