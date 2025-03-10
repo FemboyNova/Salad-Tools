@@ -75,7 +75,10 @@ export async function GET() {
                 top25PctEarningRate: gpu.earningRates?.top25PctEarningRate ?? 0,
             },
             utilizationPct: gpu.utilizationPct ?? 0,
-        }));
+            variantNames: Array.isArray(gpu.variantNames) 
+            ? gpu.variantNames.map(name => normalizeGpuNameForProcessing(name)) 
+            : [],
+    }));
 
         const normalizedVastData = vastData.models.map((model) => ({
             name: model.name || "Unknown GPU",
@@ -102,6 +105,7 @@ export async function GET() {
             return {
                 name: saladGpu.name,
                 displayName: saladGpu.displayName,
+                variantNames: saladGpu.variantNames,
                 recommendedSpecs: saladGpu.recommendedSpecs,
                 saladEarningRates: saladGpu.saladEarningRates,
                 utilizationPct: saladGpu.utilizationPct,

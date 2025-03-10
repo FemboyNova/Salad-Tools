@@ -273,7 +273,7 @@ export default function SaladNetworkMonitor() {
                     <Card key={index} className="bg-[#1e2a47] border-[#c3e325] border">
                       <CardContent className="p-4">
                         <h3 className="font-bold text-xl mb-2 text-white">{gpu.displayName}</h3>
-
+                          <p className="text-sm text-[#8b9cb3]">Includes: {gpu.variantNames.map(v => v.replace(/(\d+)(S)(\s*Ti)?\b/, "$1 Super$3")).join(", ")}</p>
                         <div className="grid grid-cols-2 gap-4 mb-3">
                           <div>
                             <p className="text-sm text-[#c3e325]">Recommended Specs</p>
@@ -286,7 +286,6 @@ export default function SaladNetworkMonitor() {
                             </span>
                           </div>
                         </div>
-
                         <div className="grid grid-cols-3 gap-2 mt-4">
                           <div className="bg-[#112240] p-3 rounded-lg text-center">
                             <p className="text-sm text-[#c3e325]">Hourly</p>
@@ -553,7 +552,12 @@ export default function SaladNetworkMonitor() {
                         className={`${index % 2 === 0 ? "bg-[#112240]" : "bg-[#1a2a3c]"} hover:bg-[#2c3e54] transition-all duration-300 border-b border-[#2c3e54] last:border-0`}
                       >
                         <td className="p-4 text-left">
-                          <div className="font-bold text-white">{gpu.displayName}</div>
+                            <div className="font-bold text-white">{gpu.displayName}</div>
+                            {gpu.variantNames.length > 0 && (
+                              <div className="text-xs text-[#8b9cb3]">
+                                Includes: {gpu.variantNames.map(v => v.replace(/(\d+)(S)(\s*Ti)?\b/, "$1 Super$3")).join(", ")}
+                              </div>
+                            )}
                         </td>
                         <td className="p-4 text-left">
                           <div className="text-white">{gpu.recommendedSpecs.ramGb}GB RAM</div>
@@ -663,11 +667,15 @@ export default function SaladNetworkMonitor() {
                 return (
                   <Card key={index} className="bg-[#1a2a3c] border-[#2c3e54] border">
                     <CardContent className="p-4">
-                      <div className="flex justify-between items-start mb-3">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
                         <h3 className="font-bold text-white text-lg">{gpu.displayName}</h3>
-                        <span className={`px-2 py-1 rounded-full text-xs ${demand.className}`}>{demand.text}</span>
+                         {Array.isArray(gpu.variantNames) && gpu.variantNames.length > 0 && (
+                         <p className="text-xs text-[#8b9cb3]">Includes: {gpu.variantNames.map(v => v.replace(/(\d+)(S)(\s*Ti)?\b/, "$1 Super$3")).join(", ")}</p>    )}
+                        </div>
+                       <span className={`px-2 py-1 rounded-full text-xs ${demand.className}`}>{demand.text}</span>
                       </div>
-
+                    
                       <div className="grid grid-cols-2 gap-4 mb-4">
                         <div>
                           <p className="text-xs text-[#c3e325]">Specs</p>
